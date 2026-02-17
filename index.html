@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bradley Grose</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --dim: #555;
+    --font: 'Courier New', Courier, monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    background: var(--bg);
+    border-bottom: 1px solid #111;
+  }
+
+  .nav-name {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--dim);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--fg); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 32px 80px;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .hero-title {
+    font-size: clamp(36px, 8vw, 96px);
+    font-weight: normal;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    line-height: 1;
+  }
+
+  .hero-sub {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: lowercase;
+  }
+
+  /* GIF PLACEHOLDER */
+  .gif-wrap {
+    width: clamp(200px, 40vw, 420px);
+    aspect-ratio: 4/3;
+    border: 1px solid #222;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .gif-inner {
+    width: 100%;
+    height: 100%;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  /* animated scanline effect to mimic a gif */
+  .gif-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.015) 2px,
+      rgba(255,255,255,0.015) 4px
+    );
+    pointer-events: none;
+  }
+
+  .gif-inner::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(transparent, rgba(255,255,255,0.03), transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { top: -40%; }
+    100% { top: 100%; }
+  }
+
+  .gif-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: #333;
+    text-transform: lowercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  .gif-bracket {
+    font-size: 28px;
+    color: #222;
+    letter-spacing: 0.5em;
+    position: relative;
+    z-index: 1;
+    animation: blink 2.5s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 100px 32px;
+    max-width: 800px;
+    margin: 0 auto;
+    border-top: 1px solid #111;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    text-transform: lowercase;
+    margin-bottom: 40px;
+  }
+
+  /* ABOUT */
+  .about-text {
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 580px;
+  }
+
+  .about-text em {
+    font-style: normal;
+    color: var(--dim);
+  }
+
+  /* WORK */
+  .projects {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .project-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid #111;
+    cursor: pointer;
+    transition: padding-left 0.2s;
+    text-decoration: none;
+    color: var(--fg);
+  }
+
+  .project-item:hover {
+    padding-left: 12px;
+  }
+
+  .project-item:hover .proj-name { color: var(--fg); }
+  .project-item:hover .proj-arrow { opacity: 1; }
+
+  .proj-name {
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    transition: color 0.2s;
+  }
+
+  .proj-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .proj-tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    text-transform: lowercase;
+  }
+
+  .proj-arrow {
+    font-size: 12px;
+    color: var(--fg);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  /* SKILLS */
+  .skills-flow {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    line-height: 2.4;
+    text-transform: lowercase;
+  }
+
+  .skills-flow span {
+    color: var(--fg);
+    margin-right: 6px;
+  }
+
+  .skills-flow .sep {
+    color: #222;
+    margin: 0 8px;
+  }
+
+  /* CONTACT */
+  .contact-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-line {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .contact-type {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    width: 72px;
+    text-transform: lowercase;
+    flex-shrink: 0;
+  }
+
+  .contact-val {
+    font-size: 14px;
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+  }
+
+  .contact-val:hover { border-color: var(--fg); }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    border-top: 1px solid #111;
+    background: var(--bg);
+    overflow: hidden;
+    padding: 10px 0;
+    z-index: 100;
+  }
+
+  .marquee-track {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 28s linear infinite;
+  }
+
+  .marquee-track:hover { animation-play-state: paused; }
+
+  .marquee-item {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: lowercase;
+    padding-right: 60px;
+  }
+
+  .marquee-item .dot {
+    color: #333;
+    margin-right: 60px;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* CURSOR BLINK */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 0.9em;
+    background: var(--fg);
+    vertical-align: middle;
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #222; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-name">bradley grose</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#work">work</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="border-top:none;">
+  <img src="https://drive.google.com/uc?export=view&id=11sFPeFvs-7TPjVnUQOACrJ2ZLNqkywff" alt="hero image" style="max-width:clamp(200px,50vw,520px);width:100%;display:block;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <img src="https://images.cooltext.com/5752095.png" alt="Bradley Grose" style="max-width:220px;width:100%;">
+    <img src="https://images.cooltext.com/5752083.gif" alt="" style="max-width:clamp(300px,70vw,680px);width:100%;">
+    <p class="hero-sub">— placeholder tagline · available for work —</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label">[ 001 ] about</p>
+  <p class="about-text">
+    lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <em>ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</em> duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+  </p>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <p class="section-label">[ 002 ] work</p>
+  <div class="projects">
+    <a class="project-item" href="#">
+      <span class="proj-name">project alpha</span>
+      <span class="proj-meta">
+        <span class="proj-tag">design · 2025</span>
+        <span class="proj-arrow">↗</span>
+      </span>
+    </a>
+    <a class="project-item" href="#">
+      <span class="proj-name">project beta</span>
+      <span class="proj-meta">
+        <span class="proj-tag">development · 2025</span>
+        <span class="proj-arrow">↗</span>
+      </span>
+    </a>
+    <a class="project-item" href="#">
+      <span class="proj-name">project gamma</span>
+      <span class="proj-meta">
+        <span class="proj-tag">creative direction · 2024</span>
+        <span class="proj-arrow">↗</span>
+      </span>
+    </a>
+    <a class="project-item" href="#">
+      <span class="proj-name">project delta</span>
+      <span class="proj-meta">
+        <span class="proj-tag">branding · 2024</span>
+        <span class="proj-arrow">↗</span>
+      </span>
+    </a>
+    <a class="project-item" href="#">
+      <span class="proj-name">project epsilon</span>
+      <span class="proj-meta">
+        <span class="proj-tag">photography · 2023</span>
+        <span class="proj-arrow">↗</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label">[ 003 ] skills</p>
+  <div class="skills-flow">
+    <span>skill one</span><span class="sep">·</span>
+    <span>skill two</span><span class="sep">·</span>
+    <span>skill three</span><span class="sep">·</span>
+    <span>skill four</span><span class="sep">·</span>
+    <span>skill five</span><span class="sep">·</span>
+    <span>skill six</span><span class="sep">·</span>
+    <span>skill seven</span><span class="sep">·</span>
+    <span>skill eight</span><span class="sep">·</span>
+    <span>skill nine</span><span class="sep">·</span>
+    <span>skill ten</span>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="margin-bottom: 60px;">
+  <p class="section-label">[ 004 ] contact</p>
+  <div class="contact-block">
+    <div class="contact-line">
+      <span class="contact-type">email</span>
+      <a href="mailto:hello@bradleygrose.com" class="contact-val">hello@bradleygrose.com</a>
+    </div>
+    <div class="contact-line">
+      <span class="contact-type">instagram</span>
+      <a href="#" class="contact-val">@bradleygrose</a>
+    </div>
+    <div class="contact-line">
+      <span class="contact-type">twitter</span>
+      <a href="#" class="contact-val">@bradleygrose</a>
+    </div>
+    <div class="contact-line">
+      <span class="contact-type">linkedin</span>
+      <a href="#" class="contact-val">bradley grose</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <!-- duplicate for seamless loop -->
+    <template id="marquee-tpl">
+      <span class="marquee-item">bradley grose <span class="dot">·</span></span>
+      <span class="marquee-item">available for work <span class="dot">·</span></span>
+      <span class="marquee-item">portfolio 2025 <span class="dot">·</span></span>
+      <span class="marquee-item">your city, earth <span class="dot">·</span></span>
+      <span class="marquee-item">placeholder text <span class="dot">·</span></span>
+      <span class="marquee-item">[ w — i — p ] <span class="dot">·</span></span>
+    </template>
+  </div>
+</div>
+
+<script>
+  // populate marquee
+  const tpl = document.getElementById('marquee-tpl');
+  const track = document.querySelector('.marquee-track');
+  const content = tpl.innerHTML.repeat(4);
+  track.innerHTML = content + content;
+</script>
+
+</body>
+</html>
